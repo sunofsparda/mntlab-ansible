@@ -126,11 +126,19 @@
     service: name=tomcat state=started # enabled=yes
     become: yes
     become_user: '{{tomcat_user}}'
+
+  ##### check service is running
   
   - name: check tomcat service status
     shell: service tomcat status
     become: yes
     become_user: root
+  
+  - name: check process is running 
+    shell: ps aux | grep tomcat
+
+  # - name:
+  #   shell:
 
 ############################################################ /TOMCAT #############################################################
 
