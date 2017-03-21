@@ -10,7 +10,9 @@
     jdk_rpm_name: 'jdk-8u121-linux-x64.rpm'
     jdk_download_url: 'http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm'
     jdk_version: 'jdk1.8.0_121'
-    
+
+    java_version: '1.8.0_121'
+        
     # Tomcat
     tomcat_archive: 'apache-tomcat-8.5.12.tar.gz'
     tomcat_directory: 'apache-tomcat-8.5.12'
