@@ -133,9 +133,11 @@
     shell: service tomcat status
     become: yes
     become_user: root
+  #- debug: msg={{service.stdout}}
   
   - name: check process is running 
-    shell: ps aux | grep tomcat
+    shell: ps aux | grep tomcat | grep -v grep
+  #- debug: msg={{ps.stdout}}
 
   # - name:
   #   shell:
