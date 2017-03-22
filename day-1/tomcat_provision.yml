@@ -89,7 +89,7 @@
     become_user: root
 
   - name: copying existing init script
-    copy: src=/home/student/cm/ansible/day-1/tomcat.service.bak dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat
+    copy: src=tomcat.service.bak dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat
     become: yes
     become_user: root
   
