@@ -1,0 +1,8 @@
+- hosts: webservers
+  roles:
+  - java
+  - java_test
+  - tomcat
+  - tomcat_test
+  - nginx
+  - nginx_test
