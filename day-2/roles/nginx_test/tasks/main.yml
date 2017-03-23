@@ -1,0 +1,11 @@
+  - name: check nginx  (ps aux)
+    shell: service nginx status
+    become: yes
+    become_user: tomcat_as 
+
+  - name: started time
+    shell: |  
+      echo Now: `date`
+      pid=`ps aux | grep nginx | grep -v grep | head -1 | awk '{print $2}'`
+      stat -c %z /proc/$pid
+    become: yes

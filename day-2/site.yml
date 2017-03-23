@@ -1,8 +1,30 @@
-- hosts: webservers
+- name: java tomcat nginx
+  hosts: webservers
   roles:
   - java
-  - java_test
   - tomcat
-  - tomcat_test
   - nginx
+
+- name: check java tomcat nginx
+  hosts: webservers
+  roles:
+  - java_test
+  - tomcat_test
   - nginx_test
+
+- name: is available from local_cm
+  hosts: local_cm
+  tasks:
+  - name: Checking tomcat availability from host
+    shell: |
+     curl -sL -w %{http_code} http://192.168.33.10 -o /dev/null
+     if [ $? -eq 0 ]; then
+      echo '. Curling Successfull'
+     else
+      echo '. Curling Failed'
+     fi
+    register: result
+
+  - name: debug
+    debug:
+      msg: "Curl status: {{result.stdout}}"

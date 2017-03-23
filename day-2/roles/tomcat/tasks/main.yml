@@ -1,0 +1,49 @@
+  - name: tomcat group
+    group:
+      name: '{{tomcat_group}}'
+      state: present
+    become: yes
+
+  - name: tomcat user
+    user:
+      name: '{{tomcat_user}}'
+      group: '{{tomcat_group}}'
+      home: '{{tomcat_home}}'
+    become: yes
+
+  - name: get tomcat ver. {{tomcat_version}}
+    unarchive: 
+      src: '{{tomcat_download_uri}}'
+      dest: '{{tomcat_home}}'
+      owner: '{{tomcat_user}}'
+      group: '{{tomcat_group}}'
+      remote_src: True
+      creates: '{{tomcat_home}}apache-tomcat-{{tomcat_version}}'
+    become: yes
+    become_user: '{{tomcat_user}}' 
+
+
+  - name: startup script
+    template:
+      src: tomcat.service.j2
+      dest: /etc/rc.d/init.d/tomcat
+      mode : a+x
+    become: yes
+
+  - name: tomcat {{tomcat_version}} started
+    service:
+      name: tomcat
+      state: started
+    become: yes
+    become_user: tomcat_as 
+
+  - shell: |
+      res=`/sbin/service tomcat status`
+      if [[ $res == 'Tomcat is running' ]]; then echo STARTED; fi
+    register: result
+
+  - name: debug
+    debug: 
+      msg: "Tomcat status: {{result.stdout}}"
+    become: yes
+    become_user: tomcat_as 

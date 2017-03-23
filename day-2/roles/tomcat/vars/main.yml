@@ -1,0 +1,6 @@
+tomcat_version: 8.5.12
+tomcat_home: '/opt/tomcat/'
+tomcat_user: tomcat_as
+tomcat_group: tomcat_as_group
+
+tomcat_download_uri: 'http://archive.apache.org/dist/tomcat/tomcat-{{tomcat_version[:1]}}/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz'
