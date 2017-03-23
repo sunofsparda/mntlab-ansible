@@ -1,0 +1,5 @@
+- name: name
+  hosts: webservers
+  roles:
+  - role1
+  - role2
