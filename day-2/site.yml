@@ -15,13 +15,13 @@
 - name: is available from local_cm
   hosts: local_cm
   tasks:
-  - name: Checking tomcat availability from host
+  - name: check tomcat availability from host
     shell: |
      curl -sL -w %{http_code} http://192.168.33.10 -o /dev/null
      if [ $? -eq 0 ]; then
-      echo '. Curling Successfull'
+      echo '. curl Success'
      else
-      echo '. Curling Failed'
+      echo '. curl Fail'
      fi
     register: result
 
