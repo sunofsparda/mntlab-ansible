@@ -1,10 +1,10 @@
 - name: Local
-  hosts: local_cm
+  hosts: local
 
   tasks:
 
   - name: Getting vagrant stats
-    prov:
+    vagrant:
       path: "/home/student/cm/ansible/day-3/"
       state: started 
     register: vagrant_result
@@ -18,13 +18,13 @@
   - add_host:
        name: vagrant
        ansible_port: "{{vagrant_result.port}}"
-       ansible_host: "{{vagrant_result.ip}}" #192.168.33.10
+       ansible_host: "{{vagrant_result.ip}}" #192.168.100.100
        ansible_connection: ssh
        ansible_user: vagrant
-       ansible_ssh_private_key_file: "/home/student/cm/ansible/day-3/.vagrant/machines/default/virtualbox/private_key"
+       ansible_ssh_private_key_file: ".vagrant/machines/default/virtualbox/private_key"
 
-- name: get java
-  hosts: webservers
+- name: Installation
+  hosts: vagrant
 
   vars:
     java_version: 1.7.0
@@ -34,8 +34,8 @@
     - tomcat
     - nginx
 
-- name: verification
-  hosts: webservers
+- name: Verification
+  hosts: vagrant
 
   vars:
     java_version: 1.7.0
@@ -45,11 +45,13 @@
     - tomcat_test
     - nginx_test
 
-- name: localhost curl
-  hosts: local_cm
+- name: localhost curlык
+  hosts: local
 
   tasks:
-  - name: tomcat is availible
+  
+  - name: Checking if tomcat is availible
     uri:
-      url: http://192.168.33.10/
+      url: http://192.168.100.100/
       status_code: 200
+ 

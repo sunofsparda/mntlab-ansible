@@ -1,0 +1,71 @@
+  - name: Creating tomcat group
+    become: yes
+    become_user: root
+    group:
+      name: "{{tomcat_group}}"
+      state: present
+
+  - name: Creating tomcat user
+    become: yes
+    become_user: root
+    user:
+      shell: /bin/bash
+      name: "{{tomcat_user}}"
+      home: "{{tomcat_home}}"     
+      group: "{{tomcat_group}}"
+
+  - name: Downloading tomcat
+    become: yes
+    become_user: root
+    get_url:
+      url: http://archive.apache.org/dist/tomcat/tomcat-{{tomcat_version[:1]}}/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz
+      dest: /tmp/tomcat-{{tomcat_version}}.tar.gz
+ 
+  - name: Creating tomcat directory
+    become: yes
+    become_user: "{{tomcat_user}}"
+    file:
+      path: "{{tomcat_home}}/apache-tomcat-{{tomcat_version}}"
+      state: directory
+      owner: "{{tomcat_user}}"
+      group: "{{tomcat_group}}"
+
+  - name: Unarchiving tomcat
+    become: yes
+    become_user: "{{tomcat_user}}"
+    unarchive:
+      src: /tmp/tomcat-{{tomcat_version}}.tar.gz
+      dest: "{{tomcat_home}}/"
+      remote_src: True
+ 
+  - name: Creating link to tomcat
+    become: yes
+    become_user: root
+    file: 
+      src: "{{tomcat_home}}/apache-tomcat-{{tomcat_version}}"
+      dest: "{{tomcat_home}}/current"
+      state: link
+
+  - name: Creating log directory
+    become: yes
+    file:
+ #     path: "{{tomcat_home}}/apache-tomcat-{{tomcat_version}}/logs"
+      path: "{{tomcat_home}}/current/logs"
+      state: directory
+
+  - name: Copying tomcat service config
+    become: yes
+    become_user: root
+    template:
+      src: tomcat.j2
+      dest: /etc/init.d/tomcat
+      mode: 0755
+    notify:
+     - Restart Tomcat
+  
+  - name: Starting tomcat
+    become: yes
+    become_user: root
+    service:
+      name:  tomcat
+      state: started

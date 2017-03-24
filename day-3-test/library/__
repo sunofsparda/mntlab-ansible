@@ -1,0 +1,55 @@
+#!/usr/bin/python
+
+
+
+from ansible.module_utils.basic import *
+import sys
+import subprocess
+
+import vagrant 
+import os
+
+def state(data):
+
+    vagrantfile = '/home/student/cm/ansible/day-3'
+    v1 = vagrant.Vagrant(vagrantfile)
+    status2 = v1.status()
+    results = subprocess.check_output(['vagrant', 'status'])
+    if "poweroff" in results:
+	status = "poweroff"
+    elif "running" in results:
+	status = "running"
+    else:
+        status = "not created" 
+     
+    return False, False, {"state": status2}
+
+def main():
+
+    fields = {
+        "path": {"required": True, "type": "str"},
+        "state": {
+            "default": "status",
+            "choices": ['status', 'up', 'halt'],
+            "type": 'str'
+        },
+    }
+
+    choice_map = {
+        "status": state,
+        "up": state,
+        "halt": state
+    }
+
+    module = AnsibleModule(argument_spec=fields)
+    is_error, has_changed, result = choice_map.get(
+        module.params['state'])(module.params)
+
+    if not is_error:
+        module.exit_json(changed=has_changed, meta=result)
+    else:
+        module.fail_json(msg="Error deleting repo", meta=result)
+
+
+if __name__ == '__main__':
+    main()

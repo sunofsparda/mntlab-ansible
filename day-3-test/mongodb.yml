@@ -1,7 +1,7 @@
-- name: module
-  hosts: webservers
+- name: MongoDB
+  hosts: local
+
   vars:
-    mongodb_version: '3.2.17'
     mongo_src:
     - mongodb-linux-x86_64-rhel62-3.4.1
     - mongodb-linux-x86_64-rhel70-3.4.1
@@ -13,4 +13,8 @@
     - mongodb-linux-x86_64-rhel70-3.0.14
 
   tasks:
-  - debug: msg={{mongo_src | get_mongo_src(ansible_os_family,ansible_distribution_major_version,mongodb_version)}}
+  - debug: msg={{ mongo_src | get_mongo_src(ansible_distribution, 7, 3.2 ) }}
+
+  - vagrant:
+      path: "/home/student/cm/ansible/day-3/"
+      state: started
