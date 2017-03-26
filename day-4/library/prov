@@ -1,0 +1,98 @@
+#!/bin/sh
+#$1 - First parameter - path to vagrantfile
+#$2 - Second parameter - state: started, stopped, destroyed
+
+### check input vars
+source $1
+
+if [ -z "$path" ]; then
+    printf '{"failed": true, "msg": "Missing required arguments: path"}'
+    exit 1
+fi
+if [ -z "$state" ]; then
+    printf '{"failed": true, "msg": "Missing required arguments: state"}'
+    exit 1
+fi
+
+### check if Vagrantfile exists
+if [ ! -f "$path" ]; then
+	printf '{"failed": true, "msg": "Missing Vagrantfile"}'
+	exit 1
+fi 
+###
+
+
+function get_vars
+	{
+	ip=$(vagrant ssh-config | grep HostName | awk '{print $2}')
+    port=$(vagrant ssh-config | grep Port | awk '{print $2}')
+    user=$(vagrant ssh-config | grep -w "User" | awk '{print $2}' 2>/dev/null)
+    key=$(vagrant ssh-config | grep IdentityFile | awk '{print $2}' 2>/dev/null)
+    status=$(vagrant status | grep default | awk '{print $2}')
+    os_name=$(vagrant ssh -c "cat /etc/redhat-release" 2>/dev/null)
+    ram=$(vagrant ssh -c "cat /proc/meminfo | grep MemTotal | awk '{print \$2}'" 2>/dev/null)
+}
+
+
+function vagrant_up
+	{ 
+	status=$(vagrant status | grep default | awk '{print $2}')
+	if [ "$status" == "running" ]; then
+		get_vars
+		printf '{"failed": false, "changed": false, "ip": "%s", "port": "%s", "user": "%s", "key": "%s", "status": "%s", "os_name": "%s", "ram": "%s"}' "$ip" "$port" "$user" "$key" "$status" "$os_name" "$ram"
+        exit 0
+    else
+		vagrant up &>/dev/null
+		get_vars
+		printf '{"failed": false, "changed": true, "ip": "%s", "port": "%s", "user": "%s", "key": "%s", "status": "%s", "os_name": "%s", "ram": "%s"}' "$ip" "$port" "$user" "$key" "$status" "$os_name" "$ram"
+    fi
+}
+
+
+function vagrant_halt
+{   status=$(vagrant status | grep default | awk '{print $2}')
+    if [ "$status" == "running" ]; then
+    	vagrant halt
+        status=$(vagrant status | grep default | awk '{print $2}')
+        printf '{"failed": false, "changed": true, "status": "%s"}' "$status"
+        exit 0
+    else
+        changed="false"
+        failed="false"
+        printf '{"failed": false, "changed": true, "status": "%s"}' "$status"
+    fi
+}
+
+
+function vagrant_destroy
+{   status=$(vagrant status | grep default | head -n1 | awk '{print $2}')
+    if [ "$status" == "running" ] || [ "$status" == "poweroff" ]; then
+    	vagrant destroy --force
+        status=$(vagrant status | grep default | head -n1 | awk '{print $2 " " $3}')
+        printf '{"failed": false, "changed": true, "status": "%s"}' "$status"
+        exit 0
+    else
+        status=$(vagrant status | grep default |  head -n1 | awk '{print $2 " " $3}')
+        changed="false"
+        failed="false"
+        printf '{"failed": false, "changed": true, "status": "%s"}' "$status"
+    fi
+}
+
+case $state in
+    started)
+        vagrant_up
+    ;;
+    stopped)
+        vagrant_halt
+    ;;
+    destroyed)
+        vagrant_destroy
+    ;;
+    *)
+        printf '{"failed": true, "msg": "invalid state selected {started | stopped | destroyed}"}'
+        exit 1
+    ;;
+esac
+
+exit 0
