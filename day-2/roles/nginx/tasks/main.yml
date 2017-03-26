@@ -10,12 +10,3 @@
 - name: run nginx
   service: name=nginx state=started
   become: yes
-
-- shell: |
-    res=`/sbin/service nginx status | grep 'is running'`
-    if [[ $res != '' ]]; then echo STARTED; fi
-  register: result
-
-- name: debug
-  debug: 
-    msg: "nginx status: {{result.stdout}}"

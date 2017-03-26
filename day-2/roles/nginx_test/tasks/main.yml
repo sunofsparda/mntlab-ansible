@@ -1,10 +1,19 @@
-  - name: check nginx is running
-    shell: service nginx status
-    become: yes
+- name: check nginx is running
+  shell: service nginx status
+  become: yes
     
-  - name: get start time
-    shell: |  
-      echo Now: `date`
-      pid=`ps aux | grep nginx | grep -v grep | head -1 | awk '{print $2}'`
-      stat -c %z /proc/$pid
-    become: yes
+- shell: |
+    res=`/sbin/service nginx status | grep 'is running'`
+    if [[ $res != '' ]]; then echo STARTED; fi
+  register: result
+
+- name: debug
+  debug: 
+    msg: "nginx status: {{result.stdout}}"
+
+- name: get start time
+  shell: |  
+    echo Now: `date`
+    pid=`ps aux | grep nginx | grep -v grep | head -1 | awk '{print $2}'`
+    stat -c %z /proc/$pid
+  become: yes
