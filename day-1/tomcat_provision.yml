@@ -24,12 +24,12 @@
   tasks:
 
 ############################################################ JAVA #############################################################
-  ##### OpenJava from inet
+  ##### OpenJava from web
   - name: install java
     yum: name=java state=latest
     become: yes
   
-  ##### OracleJDK from inet
+  ##### OracleJDK from web
   #- name: download {{jdk_version}}
   #  shell: 'curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" {{jdk_download_url}} -o {{download_folder}}/{{jdk_rpm_name}}'
   #- name: install {{jdk_rpm_name}} rpm from a local file
@@ -111,6 +111,13 @@
 
   - name: curl
     shell: "curl -sL -w %{http_code} http://127.0.0.1:8080 -o /dev/null"
+    become: yes
+
+  - name: Get started time
+    shell: |  
+      echo Now: date
+      echo 'Was started:' pid=`ps aux | grep tomcat | grep -v 'worker process is shutting down' | head -1 | awk '{print $2}'`
+      stat -c %z /proc/$pid
     become: yes
 ############################################################ /TOMCAT #############################################################
 
