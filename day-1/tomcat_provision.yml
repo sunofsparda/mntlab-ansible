@@ -87,24 +87,11 @@
     become: yes
     become_user: '{{tomcat_user}}'
   
-  # - name: modifying_1 init script
-  #   #shell: sed -ie 's/apps_folder/{{apps_folder}}/g; s/tomcat_version/{{tomcat_version}}/g' {{apps_folder}}/tomcat/{{tomcat_version}}/tomcat
-  #   #command: sed -i "s/apps_folder/{{apps_folder}}/g" tomcat
-  #   template: dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat.service regexp='apps_folder' replace='{{apps_folder}}' backup=yes
-  #   become: yes
-  #   become_user: '{{tomcat_user}}'
-
-  # - name: modifying_2 init script
-  #   replace: dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat regexp='tomcat_version' replace='{{tomcat_version}}' backup=yes
-  #   become: yes
-  #   become_user: '{{tomcat_user}}'
-
   - name: setting right permissions to service
     shell: chmod a+x {{apps_folder}}/tomcat/{{tomcat_version}}/tomcat.service
     become: yes
 
-
-  - name: creating tomcat service
+  - name: create tomcat service
     copy: src={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat.service dest=/etc/rc.d/init.d/tomcat mode=a+x remote_src=yes
   #  shell: ln -s {{apps_folder}}/tomcat/{{tomcat_version}}/tomcat /etc/rc.d/init.d/tomcat
     become: yes
