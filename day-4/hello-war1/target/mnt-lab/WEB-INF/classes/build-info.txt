@@ -1,0 +1,4 @@
+Build time
+Build Machine Name
+Build User Name
+
