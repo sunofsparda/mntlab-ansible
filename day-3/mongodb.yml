@@ -2,7 +2,7 @@
   connection: local
 
   vars:
-    mongodb_version: 3
+    mongodb_version: '3'
     mongo_src:
     - mongodb-linux-x86_64-rhel62-3.4.1
     - mongodb-linux-x86_64-rhel70-3.4.1
