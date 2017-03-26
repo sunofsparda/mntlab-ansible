@@ -1,4 +1,4 @@
-- name: java tomcat nginx
+- name: install java tomcat nginx
   hosts: webservers
   roles:
   - java

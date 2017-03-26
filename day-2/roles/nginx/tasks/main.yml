@@ -3,9 +3,7 @@
   become: yes
 
 - name: config nginx
-  template: 
-    src: vhosts.j2
-    dest: /etc/nginx/conf.d/vhosts.conf
+  template: src=vhosts.j2 dest=/etc/nginx/conf.d/vhosts.conf
   become: yes
   notify: restart nginx
 
@@ -21,5 +19,3 @@
 - name: debug
   debug: 
     msg: "nginx status: {{result.stdout}}"
-  become: yes
-  become_user: tomcat_as
