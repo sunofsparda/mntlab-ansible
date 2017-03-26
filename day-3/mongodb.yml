@@ -1,7 +1,8 @@
-- name: module
-  hosts: webservers
+- hosts: localhost
+  connection: local
+
   vars:
-    mongodb_version: '3.2.17'
+    mongodb_version: 3
     mongo_src:
     - mongodb-linux-x86_64-rhel62-3.4.1
     - mongodb-linux-x86_64-rhel70-3.4.1
@@ -13,4 +14,4 @@
     - mongodb-linux-x86_64-rhel70-3.0.14
 
   tasks:
-  - debug: msg={{mongo_src | get_mongo_src(ansible_os_family,ansible_distribution_major_version,mongodb_version)}}
+  - debug: msg={{ mongo_src | get_mongo_src(ansible_os_family, ansible_distribution_major_version, mongodb_version) }}

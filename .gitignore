@@ -4,3 +4,4 @@
 **/.vagrant/
 documentaion/
 /d*test/
+**/__pycache__/

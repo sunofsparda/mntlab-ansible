@@ -3,23 +3,10 @@
   become: yes
 
 - name: config nginx
-  template: 
-    src: vhosts.j2
-    dest: /etc/nginx/conf.d/vhosts.conf
+  template: src=vhosts.j2 dest=/etc/nginx/conf.d/vhosts.conf
   become: yes
   notify: restart nginx
 
 - name: run nginx
   service: name=nginx state=started
   become: yes
-
-- shell: |
-    res=`/sbin/service nginx status | grep 'is running'`
-    if [[ $res != '' ]]; then echo STARTED; fi
-  register: result
-
-- name: debug
-  debug: 
-    msg: "nginx status: {{result.stdout}}"
-  become: yes
-  become_user: tomcat_as

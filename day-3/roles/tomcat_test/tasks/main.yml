@@ -3,5 +3,5 @@
     become: yes
     become_user: root
 
-  - name: check service (ps aux)
+  - name: check tomcat service 
     shell: ps aux | grep tomcat

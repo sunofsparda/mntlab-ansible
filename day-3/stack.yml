@@ -1,55 +1,29 @@
-- name: Local
-  hosts: local_cm
+- name: stack
+  hosts: localhost
+  
+  vars:
+    state: started
 
   tasks:
-
-  - name: Getting vagrant stats
-    prov:
-      path: "/home/student/cm/ansible/day-3/"
-      state: started 
-    register: vagrant_result
-
-  - debug:
-       msg: "{{vagrant_result.ip}}"
-  - debug:
-       msg: "{{vagrant_result.port}}"
-
-
+  - name: vagrant provision
+    prov: path=Vagrantfile state={{state}}
+    register: vagrant_vars
+  - debug: msg={{vagrant_vars}}
   - add_host:
-       name: vagrant
-       ansible_port: "{{vagrant_result.port}}"
-       ansible_host: "{{vagrant_result.ip}}" #192.168.33.10
-       ansible_connection: ssh
-       ansible_user: vagrant
-       ansible_ssh_private_key_file: "/home/student/cm/ansible/day-3/.vagrant/machines/default/virtualbox/private_key"
+      name: websvr
+      ansible_host: "{{vagrant_vars.ip}}"
+      ansible_port: "{{vagrant_vars.port}}"
+      ansible_connection: ssh 
+      ansible_user: "{{vagrant_vars.user}}"
+      ansible_ssh_private_key_file: "{{vagrant_vars.key}}"
+    when: vagrant_vars.status == "running"
 
-- name: get java
-  hosts: webservers
-
-  vars:
-    java_version: 1.7.0
-
+- name: tomcat site
+  hosts: websvr
   roles:
-    - java
-    - tomcat
-    - nginx
-
-- name: verification
-  hosts: webservers
-
-  vars:
-    java_version: 1.7.0
-
-  roles:
-    - java_test
-    - tomcat_test
-    - nginx_test
-
-- name: localhost curl
-  hosts: local_cm
-
-  tasks:
-  - name: tomcat is availible
-    uri:
-      url: http://192.168.33.10/
-      status_code: 200
+    - { role: java}
+    - { role: tomcat}
+    - { role: nginx} 
+    - { role: java_test}
+    - { role: tomcat_test}
+    - { role: nginx_test}
