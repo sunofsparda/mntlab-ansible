@@ -1,2 +1,8 @@
 [tomcat]
-tomcat_svr ansible_host=localhost ansible_port=2222  ansible_connection=ssh ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/default/virtualbox/private_key
+tomcat_svr 
+[tomcat:vars]
+ansible_host=localhost 
+ansible_port=2222 
+ansible_connection=ssh
+ansible_user=vagrant
+ansible_ssh_private_key_file=.vagrant/machines/default/virtualbox/private_key

@@ -1,0 +1,153 @@
+- name: tomcat_provision
+  hosts: tomcat
+  vars:
+
+    download_folder: /tmp
+    apps_folder: /opt
+    vagrant_share: /vagrant/soft
+    # JDK
+    jdk_rpm_name: 'jdk-8u121-linux-x64.rpm'
+    jdk_download_url: 'http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm'
+    jdk_version: 'jdk1.8.0_121'
+
+    java_version: '1.8.0_121'
+        
+    # Tomcat
+    tomcat_archive: 'apache-tomcat-8.5.12.tar.gz'
+    tomcat_directory: 'apache-tomcat-8.5.12'
+    tomcat_download_url: 'http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.12/bin/{{tomcat_archive}}' 
+    tomcat_version: '8.5.12'
+    tomcat_user: tomcat_as
+    tomcat_group: tomcat_as_group
+    
+  tasks:
+
+############################################################ JAVA #############################################################
+  ##### OpenJava from inet
+  #- name: install openjava
+  #  yum: name=java state=latest
+  #  become: yes
+  #  become_user: root
+  
+  ##### OracleJDK from inet
+  #- name: download {{jdk_version}}
+  #  shell: 'curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" {{jdk_download_url}} -o {{download_folder}}/{{jdk_rpm_name}}'
+  #- name: install {{jdk_rpm_name}} rpm from a local file
+  #  yum: name={{download_folder}}/{{jdk_rpm_name}} state=present
+  #  become: yes
+  #  become_user: root 
+  
+  ##### OracleJDK from vagrant_share
+  - name: install OracleJDK rpm from a local file
+    yum: name={{vagrant_share}}/{{jdk_rpm_name}} state=present
+    become: yes
+    become_user: root
+############################################################ /JAVA #############################################################
+
+
+
+
+
+############################################################ TOMCAT #############################################################
+
+  ##### Preparing env for Tomcat
+
+  # create tomcat user and group  
+  - name: add group "tomcat_as_group"
+    group: name={{tomcat_group}}
+    become: yes
+    become_user: root
+  - name: add user "tomcat_as"
+    user: name={{tomcat_user}} group={{tomcat_group}} home=/usr/share/tomcat createhome=no
+    become: yes
+    become_user: root
+
+  - name: create tomcat dir
+    shell: mkdir -p {{apps_folder}}/tomcat #/{{tomcat_version}}
+    become: yes
+    become_user: root
+
+    ##### Tomcat from inet
+  #- name: download tomcat
+  #  get_url: url={{tomcat_download_url}} dest={{download_folder}}
+
+  # - name: install tomcat
+  #   unarchive: src={{download_folder}}/{{tomcat_archive}} dest={{apps_folder}}/tomcat remote_src=yes #/{{tomcat_version}} remote_src=yes
+  #   become: yes
+  #   become_user: root
+  
+    ##### Tomcat from vagrant_share
+  - name: install tomcat
+    unarchive: src={{vagrant_share}}/{{tomcat_archive}} dest={{apps_folder}}/tomcat remote_src=yes #/{{tomcat_version}} remote_src=yes
+    become: yes
+    become_user: root
+
+  - name: rename tomcat dir
+    command: mv {{apps_folder}}/tomcat/{{tomcat_directory}} {{apps_folder}}/tomcat/{{tomcat_version}} creates={{apps_folder}}/tomcat/{{tomcat_version}}
+    become: yes
+    become_user: root
+
+  - name: copying existing init script
+    copy: src=tomcat.service.bak dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat
+    become: yes
+    become_user: root
+  
+  - name: modifying_1 init script
+    #shell: sed -ie 's/apps_folder/{{apps_folder}}/g; s/tomcat_version/{{tomcat_version}}/g' {{apps_folder}}/tomcat/{{tomcat_version}}/tomcat
+    #command: sed -i "s/apps_folder/{{apps_folder}}/g" tomcat
+    replace: dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat regexp='apps_folder' replace='{{apps_folder}}' backup=yes
+    become: yes
+    become_user: root
+
+  - name: modifying_2 init script
+    replace: dest={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat regexp='tomcat_version' replace='{{tomcat_version}}' backup=yes
+    become: yes
+    become_user: root
+
+  - name: setting right permissions to service
+    shell: chmod a+x {{apps_folder}}/tomcat/{{tomcat_version}}/tomcat
+    become: yes
+    become_user: root
+
+  - name: setting right permissions
+    shell: chown -R {{tomcat_user}}:{{tomcat_group}} {{apps_folder}}/tomcat
+    become: yes
+    become_user: root
+
+  - name: creating tomcat service
+    copy: src={{apps_folder}}/tomcat/{{tomcat_version}}/tomcat dest=/etc/rc.d/init.d/tomcat mode=a+x remote_src=yes
+  #  shell: ln -s {{apps_folder}}/tomcat/{{tomcat_version}}/tomcat /etc/rc.d/init.d/tomcat
+    become: yes
+    become_user: root
+  
+  #- name: add to chkconfig
+  #  shell: chkconfig --add tomcat --level 3
+
+  - name: start tomcat service
+    service: name=tomcat state=started # enabled=yes
+    become: yes
+    become_user: '{{tomcat_user}}'
+
+  ##### check service is running
+  
+  - name: check tomcat service status
+    shell: service tomcat status
+    become: yes
+    become_user: root
+  #- debug: msg={{service.stdout}}
+  
+  - name: check process is running 
+    shell: ps aux | grep tomcat | grep -v grep
+  #- debug: msg={{ps.stdout}}
+
+  # - name:
+  #   shell:
+
+############################################################ /TOMCAT #############################################################
+
+
+
+
+################### return 0
+  - name: test 0
+    shell: echo 0
