@@ -28,3 +28,4 @@
   - name: debug
     debug:
       msg: "Curl status: {{result.stdout}}"
+
