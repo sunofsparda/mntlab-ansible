@@ -1,0 +1,5 @@
+[dev]
+dev ansible_host=localhost
+
+[prod]
+prod ansible_host=localhost

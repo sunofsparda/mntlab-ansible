@@ -1,0 +1,6 @@
+- name: Provision prod machines
+  hosts: prod
+
+  roles:
+    - role: webserver
+      do_tests: yes

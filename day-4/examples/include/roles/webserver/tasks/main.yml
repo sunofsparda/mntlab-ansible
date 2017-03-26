@@ -1,0 +1,4 @@
+- include: install.yml
+
+- include: test.yml
+  when: do_tests | bool

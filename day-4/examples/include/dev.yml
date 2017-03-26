@@ -1,0 +1,6 @@
+- name: Provison dev machines
+  hosts: dev
+
+  roles:
+    - role: webserver
+      do_tests: no

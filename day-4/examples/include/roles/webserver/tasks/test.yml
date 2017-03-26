@@ -1,0 +1,6 @@
+- name: Include test-specific variables
+  include_vars: test.yml
+
+- name: Test webserver installation
+  shell: echo "Testing {{ item }} ... Looks good"
+  with_items: '{{ things_to_check }}'

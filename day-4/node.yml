@@ -1,0 +1,4 @@
+- name: test1
+  hosts: localhost
+  tasks:
+  - shell: echo 0

@@ -1,0 +1,26 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - block:
+        - name: Create temporary directory
+          file:
+            path: /tmp/deploy
+            state: directory
+
+        - name: Russian roulette deployment
+          shell: echo "Deploying..."
+          failed_when: '{{ 2|random }} == 1'
+
+      rescue:
+        - name: Notify about the failure
+          shell: echo "Deployment failed! Tell everyone!"
+
+        - name: Rollback any changes
+          shell: echo "Rolling back..."
+
+      always:
+        - name: Remove temporary directory
+          file:
+            path: /tmp/deploy
+            state: absent

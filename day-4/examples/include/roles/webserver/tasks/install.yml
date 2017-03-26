@@ -1,0 +1,2 @@
+- name: Install webserver
+  shell: echo "Installing webserver v{{ webserver_version }}... Ok done"
