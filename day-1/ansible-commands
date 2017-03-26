@@ -1,0 +1,17 @@
+#Show ansible version
+ansible --version
+
+#Show different parametres of VM
+ansible tomcat_vm -i inventory -m setup
+
+#Execute playbook tomcat_provision.yml
+ansible-playbook tomcat_provision.yml -i inventory -c local
+
+#Execute playbook tomcat_provision.yml (verbocity)
+ansible-playbook tomcat_provision.yml -i inventory -c local -v (-vv, -vvv, -vvvv)
+
+#Syntax check of playbook tomcat_provision.yml
+ansible-playbook tomcat_provision.yml -c local --syntax-check
+
+#Check for nedded dirs and files created. Skips changing steps
+ansible-playbook tomcat_provision.yml -c local -check
