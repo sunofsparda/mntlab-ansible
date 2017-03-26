@@ -1,5 +1,0 @@
-  - name: Checking if nginx is availible
-    uri:
-      url: http://localhost/
-      status_code: 200
-

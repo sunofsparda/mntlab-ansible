@@ -1,5 +1,0 @@
-- name: Installing java
-  become: yes
-  yum:
-    name: java-{{java_version}}-openjdk
-    state: present
