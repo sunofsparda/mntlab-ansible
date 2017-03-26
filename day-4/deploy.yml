@@ -1,0 +1,29 @@
+- name: node
+  hosts: localhost
+  
+  vars:
+    state: started
+
+  # tasks:
+  # - name: vagrant provision
+  #   prov: path=Vagrantfile state={{state}}
+  #   register: vagrant_vars
+  # - debug: msg={{vagrant_vars}}
+  # - add_host:
+  #     name: websvr
+  #     ansible_host: "{{vagrant_vars.ip}}"
+  #     ansible_port: "{{vagrant_vars.port}}"
+  #     ansible_connection: ssh 
+  #     ansible_user: "{{vagrant_vars.user}}"
+  #     ansible_ssh_private_key_file: "{{vagrant_vars.key}}"
+  #   when: vagrant_vars.status == "running"
+
+- name: tomcat site
+  hosts: websvr
+  roles:
+    - { role: java}
+    - { role: tomcat}
+    - { role: nginx} 
+    - { role: java_test}
+    - { role: tomcat_test}
+    - { role: nginx_test}
