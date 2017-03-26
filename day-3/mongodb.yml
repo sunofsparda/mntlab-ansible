@@ -16,3 +16,12 @@
   tasks:
   - debug: msg={{ mongo_src | get_mongo_src(ansible_os_family, ansible_distribution_major_version, mongodb_version) }}
   
+  - name: first
+    debug: msg={{ mongo_src | get_mongo_src(ansible_distribution, "7", "3.2" ) }}
+
+  - name: second
+    debug: msg={{ mongo_src | get_mongo_src(ansible_distribution, "6", "3.0" ) }}
+
+  - name: third
+    debug: msg={{ mongo_src | get_mongo_src(ansible_distribution, "7", "3.4" ) }}
+ 
