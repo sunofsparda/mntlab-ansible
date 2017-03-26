@@ -28,7 +28,15 @@
     - { role: tomcat_test}
     - { role: nginx_test}
 
-
-
+- name: deploy app
+  hosts: localhost
+  tasks:
+    deploy: 
+      war=~/cm/ansible/day-4/hello-war/target/mnt-lab.war
+  tags:
+      - deploy_war
 ### Deploy
+# echo $(date +"%T") $(hostname) $(whoami) > src/main/resources/build-info.txt
+# mvn clean package -DbuildNumber=5
 # curl --silent -T "/home/student/cm/ansible/day-4/hello-war/target/mnt-lab.war" -u deploy:123 "127.0.0.1:8080/manager/text/deploy?path=/mnt-lab&update=true"
+# curl 127.0.0.1:8080
