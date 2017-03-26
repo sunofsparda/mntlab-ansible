@@ -19,6 +19,13 @@
     command: mv {{tomcat_home}}/{{tomcat_unarchived}} {{tomcat_home}}/{{tomcat_version}} creates={{tomcat_home}}/{{tomcat_version}}
     become: yes
     become_user: '{{tomcat_user}}'
+  
+  - name: tomcat users
+    template:
+      src: tomcat-users.j2
+      dest: '{{tomcat_home}}/{{tomcat_version}}/conf/tomcat-users.xml'
+    become: yes
+    become_user: '{{tomcat_user}}'
 
   - name: startup script
     template:

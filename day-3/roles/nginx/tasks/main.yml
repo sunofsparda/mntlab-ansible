@@ -2,10 +2,9 @@
   yum: name=nginx state=installed
   become: yes
   
-- name: config nginx
-- shell: /bin/rm -r /etc/nginx/conf.d/*
+- name: clear nginx conf.d
+  shell: /bin/rm -r /etc/nginx/conf.d/*
   become: yes
-  notify: restart nginx  
   
 - name: config nginx
   template: src=vhosts.j2 dest=/etc/nginx/conf.d/vhosts.conf

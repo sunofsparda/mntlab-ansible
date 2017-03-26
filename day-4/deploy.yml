@@ -28,13 +28,14 @@
     - { role: tomcat_test}
     - { role: nginx_test}
 
-- name: deploy app
-  hosts: localhost
-  tasks:
-    deploy: 
-      war=~/cm/ansible/day-4/hello-war/target/mnt-lab.war
-  tags:
-      - deploy_war
+# - name: deploy app
+#   hosts: localhost
+#   tasks:
+#     deploy: 
+#       war=~/cm/ansible/day-4/hello-war/target/mnt-lab.war
+#   tags:
+#       - deploy_war
+
 ### Deploy
 # echo $(date +"%T") $(hostname) $(whoami) > src/main/resources/build-info.txt
 # mvn clean package -DbuildNumber=5
