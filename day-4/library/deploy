@@ -1,11 +1,8 @@
-#!/bin/sh
-
-# war = $1
-# username = $2  
-# password = $3
+#!/bin/bash
 
 
-# curl --silent -T "$war" -u $username:$password "127.0.0.1:8080/manager/text/deploy?path=/mnt-lab&update=true"
+
+# curl --silent -T $war -u $username:$password $url
 
 curl --silent -T "/home/student/cm/ansible/day-4/hello-war/target/mnt-lab.war" -u deploy:123 "127.0.0.1:8080/manager/text/deploy?path=/mnt-lab&update=true"
 
