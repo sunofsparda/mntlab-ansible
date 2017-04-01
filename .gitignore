@@ -5,3 +5,4 @@
 documentaion/
 /d*test/
 **/__pycache__/
+/reports/
