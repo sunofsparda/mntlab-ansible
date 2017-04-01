@@ -1,0 +1,15 @@
+  - name: create deploy-info.txt
+    file: state=directory path=/var/lib/tomcat/webapps #owner=tomcat_as
+    become: yes
+
+  - name: create file
+    file: state=touch path=/var/lib/tomcat/webapps/deploy-info.txt force=yes
+    become: yes
+  
+  - name: get time deploy
+    shell: cat /opt/tomcat/current/logs/catalina.out | grep "mnt-lab.war has finished" | tail -1 | awk '{print  $2}' > /var/lib/tomcat/webapps/deploy-info.txt
+    become: yes
+  
+  - name: get user
+    shell: echo -e `awk -v val=501 -F ":" '$3==val{print $1}' /etc/passwd ` >> /var/lib/tomcat/webapps/deploy-info.txt
+    become: yes

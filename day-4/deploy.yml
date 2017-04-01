@@ -27,6 +27,8 @@
     - { role: java_test}
     - { role: tomcat_test}
     - { role: nginx_test}
+    - { role: roles/deploy }
+
 
 - name: deploy app
   hosts: localhost
